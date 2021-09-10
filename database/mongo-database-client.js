@@ -1,17 +1,57 @@
-const { MongoClient, Collection } = require('mongodb')
+const { MongoClient, Collection, Db } = require('mongodb')
 
 /**
  * @class DatabaseClient
  */
 class DatabaseClient {
     constructor() {
+        /**
+         * Connection
+         * @type {MongoClient}
+         * @private
+         */
         this._connection
+        /**
+         * Database instance
+         * @type {Db}
+         * @private
+         */
         this._instance
+        /**
+         * Host
+         * @type {string}
+         * @public
+         */
         this.host = ''
+        /**
+         * Port
+         * @type {number}
+         * @public
+         */
         this.port = 27017
+        /**
+         * Username
+         * @type {string}
+         * @public
+         * */
         this.username = ''
+        /**
+         * Password
+         * @type {string}
+         * @public
+         */
         this.password = ''
+        /**
+         * Auth database name
+         * @type {string}
+         * @public
+         */
         this.authDatabaseName = ''
+        /**
+         * Database name
+         * @type {string}
+         * @public
+         */
         this.databaseName = ''
     }
 
@@ -107,21 +147,33 @@ class DatabaseClient {
     /**
      * Get collection
      * @async
-     * @param {string} collectionName Collection name
+     * @param {string} name Collection name
      * @returns {Promise<Collection>}
      */
-    async createCollection(collectionName = '') {
-        return this._instance.createCollection(collectionName)
+    async createCollection(name = '') {
+        return this._instance.createCollection(name)
+    }
+
+    /**
+     * Exists collection
+     * @async
+     * @param {string} name Collection name
+     * @returns {Promise<boolean>}
+     */
+    async existsCollection(name = '') {
+        const collections = await this._instance.collections({
+            nameOnly: true,
+        })        
+        return collections.some(collection => collection.namespace === name)
     }
 
     /**
      * Get collection
-     * @async
      * @param {string} collectionName Collection name
-     * @returns {Promise<Collection>}
+     * @returns {Collection}
      */
-    async getCollection(collectionName = '') {
-        return this._instance.collection(collectionName)
+    getCollection(name = '') {
+        return this._instance.collection(name)
     }
 } 
 

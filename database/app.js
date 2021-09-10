@@ -11,8 +11,11 @@ async function main () {
 
     await databaseClient.connect()
 
-    // await databaseClient.createCollection('test')
-    const collection = await databaseClient.getCollection('test')
+    const collectionName = 'TestRecords'
+
+    const collection = databaseClient.existsCollection(collectionName) ?
+        databaseClient.getCollection(collectionName) :
+        await databaseClient.createCollection(collectionName)
 
     const data = {
         name: 'node X mongo',
